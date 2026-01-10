@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Jedle Admin Dashboard Design System */
+
+@layer base {
+  :root {
+    /* Jedle Green Brand */
+    --primary: 120 53% 33%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Backgrounds */
+    --background: 0 0% 98%;
+    --foreground: 220 20% 10%;
+    
+    /* Cards & Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+    
+    /* Secondary */
+    --secondary: 120 20% 95%;
+    --secondary-foreground: 120 53% 25%;
+    
+    /* Muted */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 46%;
+    
+    /* Accent */
+    --accent: 120 30% 94%;
+    --accent-foreground: 120 53% 25%;
+    
+    /* Status Colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+    
+    /* Borders & Inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 120 53% 33%;
+    
+    --radius: 0.625rem;
+    
+    /* Sidebar */
+    --sidebar-background: 220 20% 10%;
+    --sidebar-foreground: 220 10% 85%;
+    --sidebar-primary: 120 53% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 15% 20%;
+    --sidebar-ring: 120 53% 45%;
+    --sidebar-muted: 220 10% 50%;
+    
+    /* Chart Colors */
+    --chart-1: 120 53% 33%;
+    --chart-2: 120 45% 45%;
+    --chart-3: 120 35% 55%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 217 91% 60%;
+  }
+
+  .dark {
+    --primary: 120 53% 45%;
+    --primary-foreground: 0 0% 100%;
+    
+    --background: 220 20% 8%;
+    --foreground: 220 10% 95%;
+    
+    --card: 220 18% 12%;
+    --card-foreground: 220 10% 95%;
+    
+    --popover: 220 18% 12%;
+    --popover-foreground: 220 10% 95%;
+    
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 220 10% 90%;
+    
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
+    
+    --accent: 120 30% 20%;
+    --accent-foreground: 120 45% 80%;
+    
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 120 53% 45%;
+    
+    --sidebar-background: 220 20% 6%;
+    --sidebar-foreground: 220 10% 85%;
+    --sidebar-primary: 120 53% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 120 53% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+
+  html[dir="rtl"] {
+    font-family: 'Cairo', sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer components {
+  .stat-card {
+    @apply bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-md;
+  }
+  
+  .stat-value {
+    @apply text-3xl font-bold text-foreground;
+  }
+  
+  .stat-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+  
+  .stat-change-positive {
+    @apply text-sm font-medium text-success flex items-center gap-1;
+  }
+  
+  .stat-change-negative {
+    @apply text-sm font-medium text-destructive flex items-center gap-1;
+  }
+  
+  .data-table {
+    @apply w-full border-collapse;
+  }
+  
+  .data-table th {
+    @apply text-start text-sm font-medium text-muted-foreground p-4 border-b bg-muted/50;
+  }
+  
+  .data-table td {
+    @apply p-4 border-b text-sm;
+  }
+  
+  .data-table tr:hover {
+    @apply bg-muted/30;
+  }
+  
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .status-new {
+    @apply bg-destructive/10 text-destructive;
+  }
+  
+  .status-preparing {
+    @apply bg-warning/10 text-warning;
+  }
+  
+  .status-ready {
+    @apply bg-success/10 text-success;
+  }
+  
+  .status-completed {
+    @apply bg-muted text-muted-foreground;
+  }
+  
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+  }
+  
+  .nav-item-active {
+    @apply bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground;
+  }
+}
