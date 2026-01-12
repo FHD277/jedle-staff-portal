@@ -50,20 +50,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function fetchUserProfile(userId: string) {
+  async function fetchUserProfile(authUserId: string) {
     try {
       const { data, error } = await supabase
         .from('admin_users')
         .select('*')
-        .eq('id', userId)
+        .eq('auth_user_id', authUserId)  // ✅ FIXED: Changed from 'id' to 'auth_user_id'
+        .eq('is_active', true)
         .single();
 
       if (error) throw error;
+
+      if (!data) {
+        throw new Error('Staff profile not found');
+      }
 
       setUser(data as StaffUser);
     } catch (error) {
       console.error('Profile fetch error:', error);
       toast.error('Failed to load profile');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -79,16 +85,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (authError) throw authError;
 
-      // Fetch staff profile
-      const { data: staffData, error: staffError } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('email', email)
-        .eq('is_active', true)
-        .single();
+      if (!authData.user) throw new Error('No user returned');
 
-      if (staffError) throw new Error('Staff profile not found or inactive');
+// Fetch staff profile using auth_user_id
+const { data: staffData, error: staffError } = await supabase
+  .from('admin_users')
+  .select('*')
+  .eq('auth_user_id', authData.user.id)
+  .eq('is_active', true)
+  .single();
 
+// ADD THESE DEBUG LOGS:
+console.log('Auth User ID:', authData.user.id);
+console.log('Staff Data:', staffData);
+console.log('Staff Error:', staffError);
+
+if (staffError) {
+  console.error('Staff lookup error:', staffError);
+  throw new Error('Staff profile not found or inactive');
+}
       setUser(staffData as StaffUser);
 
       // Redirect based on role

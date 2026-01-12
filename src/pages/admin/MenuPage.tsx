@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { AdminLayout } from '@/components/layout/AdminLayout';
-import { AdminHeader } from '@/components/layout/AdminHeader';
+import { AdminLayout } from '@/components/layout/DashboardLayout';
+import { AdminHeader } from '@/components/layout/Header';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

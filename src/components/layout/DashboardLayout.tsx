@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { AdminSidebar } from './AdminSidebar';
+import { AdminSidebar } from './Sidebar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 

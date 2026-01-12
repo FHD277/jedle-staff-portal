@@ -1,18 +1,67 @@
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { day: 'Sat', dayAr: 'السبت', revenue: 2400 },
-  { day: 'Sun', dayAr: 'الأحد', revenue: 1398 },
-  { day: 'Mon', dayAr: 'الإثنين', revenue: 3200 },
-  { day: 'Tue', dayAr: 'الثلاثاء', revenue: 2780 },
-  { day: 'Wed', dayAr: 'الأربعاء', revenue: 1890 },
-  { day: 'Thu', dayAr: 'الخميس', revenue: 3490 },
-  { day: 'Fri', dayAr: 'الجمعة', revenue: 3250 },
-];
-
 export function RevenueChart() {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
+  
+  // Fetch last 7 days revenue
+  const { data: revenueData = [] } = useQuery({
+    queryKey: ['revenue-chart', user?.tenant_id],
+    queryFn: async () => {
+      if (!user?.tenant_id) return [];
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const { data, error } = await supabase
+        .from('orders')
+        .select('created_at, total')
+        .eq('tenant_id', user.tenant_id)
+        .gte('created_at', sevenDaysAgo.toISOString())
+        .eq('payment_status', 'paid');
+
+      if (error) throw error;
+
+      // Group by day
+      const groupedByDay: Record<string, number> = {};
+      
+      // Initialize last 7 days
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dayKey = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const dayKeyAr = date.toLocaleDateString('ar-SA', { weekday: 'short' });
+        groupedByDay[`${dayKey}|${dayKeyAr}`] = 0;
+      }
+
+      // Aggregate revenue by day
+      (data || []).forEach(order => {
+        const date = new Date(order.created_at);
+        const dayKey = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const dayKeyAr = date.toLocaleDateString('ar-SA', { weekday: 'short' });
+        const key = `${dayKey}|${dayKeyAr}`;
+        
+        if (groupedByDay[key] !== undefined) {
+          groupedByDay[key] += parseFloat(order.total || 0);
+        }
+      });
+
+      // Transform to chart format
+      return Object.entries(groupedByDay).map(([key, revenue]) => {
+        const [day, dayAr] = key.split('|');
+        return {
+          day,
+          dayAr,
+          revenue: Math.round(revenue),
+        };
+      });
+    },
+    enabled: !!user?.tenant_id,
+  });
   
   return (
     <div className="bg-card rounded-xl border p-6">
@@ -21,7 +70,7 @@ export function RevenueChart() {
       </h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="hsl(120, 53%, 33%)" stopOpacity={0.3} />

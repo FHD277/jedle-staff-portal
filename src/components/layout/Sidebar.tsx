@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -29,24 +30,25 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { icon: LayoutDashboard, labelAr: 'لوحة التحكم', labelEn: 'Dashboard', path: '/' },
-  { icon: ClipboardList, labelAr: 'الطلبات', labelEn: 'Orders', path: '/orders', badge: 5 },
-  { icon: UtensilsCrossed, labelAr: 'القائمة', labelEn: 'Menu', path: '/menu' },
-  { icon: Users, labelAr: 'العملاء', labelEn: 'Customers', path: '/customers' },
-  { icon: Gift, labelAr: 'الولاء', labelEn: 'Loyalty', path: '/loyalty' },
-  { icon: Tags, labelAr: 'العروض', labelEn: 'Promotions', path: '/promotions' },
-  { icon: MessageSquare, labelAr: 'التذاكر', labelEn: 'Tickets', path: '/tickets', badge: 3 },
-  { icon: BarChart3, labelAr: 'التقارير', labelEn: 'Reports', path: '/reports' },
+  { icon: LayoutDashboard, labelAr: 'لوحة التحكم', labelEn: 'Dashboard', path: '/admin' },
+  { icon: ClipboardList, labelAr: 'الطلبات', labelEn: 'Orders', path: '/admin/orders', badge: 5 },
+  { icon: UtensilsCrossed, labelAr: 'القائمة', labelEn: 'Menu', path: '/admin/menu' },
+  { icon: Users, labelAr: 'العملاء', labelEn: 'Customers', path: '/admin/customers' },
+  { icon: Gift, labelAr: 'الولاء', labelEn: 'Loyalty', path: '/admin/loyalty' },
+  { icon: Tags, labelAr: 'العروض', labelEn: 'Promotions', path: '/admin/promotions' },
+  { icon: MessageSquare, labelAr: 'التذاكر', labelEn: 'Tickets', path: '/admin/tickets', badge: 3 },
+  { icon: BarChart3, labelAr: 'التقارير', labelEn: 'Reports', path: '/admin/reports' },
 ];
 
 const settingsNavItems: NavItem[] = [
-  { icon: Settings, labelAr: 'الإعدادات', labelEn: 'Settings', path: '/settings' },
-  { icon: UserCog, labelAr: 'الموظفين', labelEn: 'Staff', path: '/staff' },
-  { icon: Building2, labelAr: 'الفروع', labelEn: 'Branches', path: '/branches' },
+  { icon: Settings, labelAr: 'الإعدادات', labelEn: 'Settings', path: '/admin/settings' },
+  { icon: UserCog, labelAr: 'الموظفين', labelEn: 'Staff', path: '/admin/staff' },
+  { icon: Building2, labelAr: 'الفروع', labelEn: 'Branches', path: '/admin/branches' },
 ];
 
 export function AdminSidebar() {
   const { t, direction } = useLanguage();
+  const { logout } = useAuth();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   
@@ -149,7 +151,10 @@ export function AdminSidebar() {
       
       {/* Logout */}
       <div className="p-3 border-t border-sidebar-border">
-        <button className={cn('nav-item w-full', collapsed && 'justify-center px-2')}>
+        <button 
+          onClick={logout}
+          className={cn('nav-item w-full', collapsed && 'justify-center px-2')}
+        >
           <LogOut className="w-5 h-5 shrink-0" />
           {!collapsed && <span>{t('تسجيل خروج', 'Logout')}</span>}
         </button>
